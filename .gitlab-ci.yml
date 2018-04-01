@@ -4,14 +4,40 @@ services:
   - name: docker:dind
 
 stages:
-  - lint
+  - readme-lint
+  - shell-lint
+  - docker-lint
+
+# lint the README using Markdownlint
+lint-the-readme:
+  stage: readme-lint
+  allow_failure: True
+  script:
+    - docker pull mivok/markdownlint
+    - docker run mivok/markdownlint --version
+    - >
+      docker run -i
+      mivok/markdownlint
+      --rules ~MD013
+      - < README.md
+
+# Lint the shellfile using Shellcheck
+shellscript-lint:
+  stage: shell-lint
+  script:
+    - docker pull koalaman/shellcheck
+    - docker run koalaman/shellcheck --version
+    - >
+      docker run -i
+      koalaman/shellcheck
+      - < get-docker-compose-latest-version.sh
 
 # Lint the Dockerfile using Hadolint
-lint-the-dockerfile:
-  stage: lint
+dockerfile-lint:
+  stage: docker-lint
   script:
     - docker pull hadolint/hadolint
-    - docker run --rm hadolint/hadolint hadolint --version
+    - docker run hadolint/hadolint hadolint --version
     - >
       docker run -i
       hadolint/hadolint hadolint
