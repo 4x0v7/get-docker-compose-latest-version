@@ -1,0 +1,18 @@
+# Use Docker-in-Docker service
+image: docker:git
+services:
+  - name: docker:dind
+
+stages:
+  - lint
+
+# Lint the Dockerfile using Hadolint
+lint-the-dockerfile:
+  stage: lint
+  script:
+    - docker pull hadolint/hadolint
+    - docker run --rm hadolint/hadolint hadolint --version
+    - >
+      docker run -i
+      hadolint/hadolint hadolint
+      - < Dockerfile
