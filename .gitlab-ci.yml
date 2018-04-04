@@ -52,7 +52,7 @@ lint-the-readme:
 check-the-links:
   image:
     name: docker/compose:$DOCKER_COMPOSE_VERSION
-    entrypoint: [""] # workaround GitLab running `sh` https://gitlab.com/gitlab-org/gitlab-ce/issues/30426
+    entrypoint: ["docker-compose"] # workaround GitLab running `sh` https://gitlab.com/gitlab-org/gitlab-ce/issues/30426
   stage: readme-lint
   allow_failure: False
   script:
