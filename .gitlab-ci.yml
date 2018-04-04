@@ -50,15 +50,11 @@ lint-the-readme:
 
 # check the links in the README
 check-the-links:
-  image:
-    name: docker
-    # entrypoint: [""] # workaround GitLab running `sh` https://gitlab.com/gitlab-org/gitlab-ce/issues/30426
-  services:
-    - docker:dind
   stage: readme-lint
   allow_failure: False
   script:
-    - docker-compose -f linkchecker-docker-compose run linkchecker
+    - docker build --tag linkchecker -f linkchecker-Dockerfile .
+    - docker run -v "$PWD":/app linkchecker README.md
 
 # Lint the shellfile using Shellcheck
 shellscript-lint:
