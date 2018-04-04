@@ -53,7 +53,13 @@ check-the-links:
   stage: readme-lint
   allow_failure: False
   script:
-    - docker-compose -f linkchecker-docker-compose run linkchecker
+    - docker pull docker/compose:$DOCKER_COMPOSE_VERSION
+    - docker run docker/compose:$DOCKER_COMPOSE_VERSION version
+    - >
+      docker run -i
+      docker/compose:$DOCKER_COMPOSE_VERSION
+      --file - < linkchecker-docker-compose
+      run linkchecker
 
 # Lint the shellfile using Shellcheck
 shellscript-lint:
