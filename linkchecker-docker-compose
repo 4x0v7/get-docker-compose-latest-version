@@ -1,0 +1,15 @@
+version: "2"
+services:
+  linkchecker:
+    build:
+      context: .
+      dockerfile: linkchecker-Dockerfile
+    image: "node:latest"
+    container_name: linkchecker
+    user: "node"
+    working_dir: /app
+    environment:
+      - NODE_ENV=production
+    command: ["--progress", "README.md"]
+    volumes:
+      - ./:/app

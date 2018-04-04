@@ -1,0 +1,4 @@
+FROM node:latest
+LABEL maintainer="4x0v7"
+RUN npm install -g markdown-link-check
+ENTRYPOINT [ "markdown-link-check" ]
