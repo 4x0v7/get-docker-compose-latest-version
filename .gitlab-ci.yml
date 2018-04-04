@@ -50,16 +50,15 @@ lint-the-readme:
 
 # check the links in the README
 check-the-links:
+  image: docker/compose:$DOCKER_COMPOSE_VERSION
+  services:
+  - docker:dind
   stage: readme-lint
   allow_failure: False
+  before_script:
+    - docker-compose version
   script:
-    - docker pull docker/compose:$DOCKER_COMPOSE_VERSION
-    - docker run docker/compose:$DOCKER_COMPOSE_VERSION version
-    - >
-      docker run -i
-      docker/compose:$DOCKER_COMPOSE_VERSION
-      --file - < linkchecker-docker-compose
-      run linkchecker
+    - docker-compose -f linkchecker-docker-compose run linkchecker
 
 # Lint the shellfile using Shellcheck
 shellscript-lint:
