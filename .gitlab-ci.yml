@@ -50,11 +50,11 @@ lint-the-readme:
 
 # check the links in the README
 check-the-links:
-  image: docker/compose:$DOCKER_COMPOSE_VERSION
+  image:
+    name: docker/compose:$DOCKER_COMPOSE_VERSION
+    entrypoint: [""] # workaround GitLab running `sh` https://gitlab.com/gitlab-org/gitlab-ce/issues/30426
   stage: readme-lint
   allow_failure: False
-  before_script:
-    - docker-compose version
   script:
     - docker-compose -f linkchecker-docker-compose run linkchecker
 
