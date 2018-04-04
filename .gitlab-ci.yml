@@ -51,8 +51,6 @@ lint-the-readme:
 # check the links in the README
 check-the-links:
   image: docker/compose:$DOCKER_COMPOSE_VERSION
-  services:
-  - docker:dind
   stage: readme-lint
   allow_failure: False
   before_script:
