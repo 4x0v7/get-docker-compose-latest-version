@@ -24,6 +24,8 @@ pre-lint-docker:
       docker run -i
       hadolint/hadolint hadolint
       - < linkchecker-Dockerfile
+  tags:
+    - hosted-docker
 
 pre-lint-docker-compose:
   stage: pre-lint-checks
@@ -36,6 +38,8 @@ pre-lint-docker-compose:
       docker/compose:$DOCKER_COMPOSE_VERSION
       --file - < linkchecker-docker-compose
       config
+  tags:
+    - hosted-docker
 
 # lint the README using Markdownlint
 lint-the-readme:
@@ -49,6 +53,8 @@ lint-the-readme:
       mivok/markdownlint
       --rules ~MD013
       - < README.md
+  tags:
+    - hosted-docker
 
 # check the links in the README
 check-the-links:
@@ -57,6 +63,8 @@ check-the-links:
   script:
     - docker build --tag linkchecker -f linkchecker-Dockerfile .
     - docker run -v "$PWD":/app linkchecker README.md
+  tags:
+    - hosted-docker
 
 # Lint the shellfile using Shellcheck
 shellscript-lint:
@@ -68,6 +76,8 @@ shellscript-lint:
       docker run -i
       koalaman/shellcheck
       - < get-docker-compose-latest-version.sh
+  tags:
+    - hosted-docker
 
 # Lint the Dockerfile using Hadolint
 dockerfile-lint:
@@ -79,6 +89,8 @@ dockerfile-lint:
       docker run -i
       hadolint/hadolint hadolint
       - < Dockerfile
+  tags:
+    - hosted-docker
 
 # Build and push to Dockerhub
 build-the-thing:
@@ -87,3 +99,5 @@ build-the-thing:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build --pull --tag "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
+  tags:
+    - hosted-docker
