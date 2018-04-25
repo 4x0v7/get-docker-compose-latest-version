@@ -6,6 +6,9 @@ services:
 variables:
   DOCKER_COMPOSE_VERSION: 1.20.1
 
+before_script:
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
 stages:
   - pre-lint-checks
   - readme-lint
@@ -82,8 +85,6 @@ dockerfile-lint:
 # Build and push to Dockerhub
 build-the-thing:
   stage: build
-  before_script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
     - docker build --pull -t "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
