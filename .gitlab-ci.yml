@@ -11,6 +11,7 @@ stages:
   - readme-lint
   - shell-lint
   - docker-lint
+  - build
 
 # Run our pre-lint checks
 pre-lint-docker:
@@ -77,3 +78,11 @@ dockerfile-lint:
       docker run -i
       hadolint/hadolint hadolint
       - < Dockerfile
+
+# Build and push to Dockerhub
+build-the-thing:
+  stage: build
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
