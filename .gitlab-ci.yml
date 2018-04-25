@@ -11,9 +11,7 @@ before_script:
 
 stages:
   - pre-lint-checks
-  - readme-lint
-  - shell-lint
-  - docker-lint
+  - lint
   - build
 
 # Run our pre-lint checks
@@ -41,7 +39,7 @@ pre-lint-docker-compose:
 
 # lint the README using Markdownlint
 lint-the-readme:
-  stage: readme-lint
+  stage: lint
   allow_failure: True
   script:
     - docker pull mivok/markdownlint
@@ -54,7 +52,7 @@ lint-the-readme:
 
 # check the links in the README
 check-the-links:
-  stage: readme-lint
+  stage: lint
   allow_failure: False
   script:
     - docker build --tag linkchecker -f linkchecker-Dockerfile .
@@ -62,7 +60,7 @@ check-the-links:
 
 # Lint the shellfile using Shellcheck
 shellscript-lint:
-  stage: shell-lint
+  stage: lint
   script:
     - docker pull koalaman/shellcheck
     - docker run koalaman/shellcheck --version
@@ -73,7 +71,7 @@ shellscript-lint:
 
 # Lint the Dockerfile using Hadolint
 dockerfile-lint:
-  stage: docker-lint
+  stage: lint
   script:
     - docker pull hadolint/hadolint
     - docker run hadolint/hadolint hadolint --version
