@@ -7,7 +7,7 @@ variables:
   DOCKER_COMPOSE_VERSION: 1.20.1
 
 before_script:
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
 
 stages:
   - pre-lint-checks
