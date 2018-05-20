@@ -13,7 +13,6 @@ stages:
   - pre-lint-checks
   - lint
   - build
-  - push
 
 # Run our pre-lint checks
 pre-lint-docker:
@@ -81,14 +80,9 @@ dockerfile-lint:
       hadolint/hadolint hadolint
       - < Dockerfile
 
-# Build the Docker image
+# Build and push to Dockerhub
 build-the-thing:
   stage: build
   script:
     - docker build --pull --tag "$CI_REGISTRY_IMAGE" .
-
-# Push the image to Dockerhub
-push-the-thing:
-  stage: push
-  script:
     - docker push "$CI_REGISTRY_IMAGE"
