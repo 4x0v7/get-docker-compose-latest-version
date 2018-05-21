@@ -13,6 +13,7 @@ stages:
   - pre-lint-checks
   - lint
   - build
+  - test
 
 # Run our pre-lint checks
 pre-lint-docker:
@@ -87,3 +88,9 @@ build-and-push-the-thing:
   script:
     - docker build --pull --tag "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
+
+run-and-test-the-thing:
+  stage: test
+  script:
+    - docker pull "$CI_REGISTRY_IMAGE"
+    - docker run "$CI_REGISTRY_IMAGE"
