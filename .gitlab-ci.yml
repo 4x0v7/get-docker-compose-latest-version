@@ -78,6 +78,7 @@ lint-the-dockerfile:
     - >
       docker run -i
       hadolint/hadolint hadolint
+      --ignore DL3018
       - < Dockerfile
 
 # Build and push to Dockerhub
