@@ -59,7 +59,7 @@ check-the-links:
     - docker run -v "$PWD":/app linkchecker README.md
 
 # Lint the shellfile using Shellcheck
-shellscript-lint:
+lint-the-scripts:
   stage: lint
   script:
     - docker pull koalaman/shellcheck
@@ -70,7 +70,7 @@ shellscript-lint:
       - < get-docker-compose-latest-version.sh
 
 # Lint the Dockerfile using Hadolint
-dockerfile-lint:
+lint-the-dockerfile:
   stage: lint
   script:
     - docker pull hadolint/hadolint
@@ -81,7 +81,7 @@ dockerfile-lint:
       - < Dockerfile
 
 # Build and push to Dockerhub
-build-the-thing:
+build-and-push-the-thing:
   stage: build
   script:
     - docker build --pull --tag "$CI_REGISTRY_IMAGE" .
