@@ -1,5 +1,5 @@
 # Use Docker-in-Docker service
-image: docker:git
+image: docker:latest
 services:
   - name: docker:dind
 
