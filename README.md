@@ -15,3 +15,4 @@ It is using curl and grep to get the `Location` header returned from the 302 red
 ```shell
 docker run 4x0v7/get-docker-compose-latest-version
 ```
+
