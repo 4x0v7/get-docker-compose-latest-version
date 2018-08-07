@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.8
 LABEL maintainer="https://github.com/4x0v7"
 RUN apk --no-cache add \
     curl \
