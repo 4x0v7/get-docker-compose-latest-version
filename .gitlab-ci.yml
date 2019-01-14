@@ -20,7 +20,7 @@ check-the-links:
   allow_failure: True
   image: golang:latest
   script:
-    - go --version
+    - go version
     - go get -u github.com/raviqqe/liche -v
     - liche README.md -v
 
