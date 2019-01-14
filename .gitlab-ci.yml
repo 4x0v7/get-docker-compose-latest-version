@@ -8,11 +8,14 @@ stages:
 lint-the-readme:
   stage: docs-check
   allow_failure: True
-  image: ruby:2.5.3-alpine3.8
+  image: ruby:2.6.0-alpine3.8
   script:
     - gem install mdl
     - mdl --version
-    - mdl README.md
+    - >
+      mdl
+      --rules ~MD046
+      README.md
 
 # check the links in the README
 check-the-links:
