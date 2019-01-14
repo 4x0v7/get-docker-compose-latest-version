@@ -21,7 +21,7 @@ check-the-links:
   image: golang:latest
   script:
     - go version
-    - go get -u github.com/raviqqe/liche -v
+    - go get -v -u github.com/raviqqe/liche
     - liche README.md -v
 
 # Lint the shellfile using Shellcheck
