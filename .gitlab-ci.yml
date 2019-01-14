@@ -1,96 +1,68 @@
-# Use Docker-in-Docker service
-image: docker:latest
-services:
-  - name: docker:dind
-
-variables:
-  DOCKER_COMPOSE_VERSION: 1.22.0
-
-before_script:
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
-
 stages:
-  - pre-lint-checks
+  - docs-check
   - lint
   - build
   - test
 
-# Run our pre-lint checks
-pre-lint-docker:
-  stage: pre-lint-checks
-  script:
-    - docker pull hadolint/hadolint
-    - docker run hadolint/hadolint hadolint --version
-    - >
-      docker run -i
-      hadolint/hadolint hadolint
-      - < linkchecker-Dockerfile
-
-pre-lint-docker-compose:
-  stage: pre-lint-checks
-  script:
-    - docker version
-    - docker pull docker/compose:$DOCKER_COMPOSE_VERSION
-    - docker run docker/compose:$DOCKER_COMPOSE_VERSION version
-    - >
-      docker run -i
-      docker/compose:$DOCKER_COMPOSE_VERSION
-      --file - < linkchecker-docker-compose
-      config
-
 # lint the README using Markdownlint
 lint-the-readme:
-  stage: lint
+  stage: docs-check
   allow_failure: True
+  image: ruby:2.5.3-alpine3.8
   script:
-    - docker pull mivok/markdownlint
-    - docker run mivok/markdownlint --version
-    - >
-      docker run -i
-      mivok/markdownlint
-      --rules ~MD013
-      - < README.md
+    - gem install mdl
+    - mdl --version
+    - mdl README.md
 
 # check the links in the README
 check-the-links:
-  stage: lint
-  allow_failure: False
+  stage: docs-check
+  allow_failure: True
+  image: golang:latest
   script:
-    - docker build --tag linkchecker -f linkchecker-Dockerfile .
-    - docker run -v "$PWD":/app linkchecker README.md
+    - go --version
+    - go get -u github.com/raviqqe/liche -v
+    - liche README.md -v
 
 # Lint the shellfile using Shellcheck
 lint-the-scripts:
   stage: lint
+  image: koalaman/shellcheck-alpine:stable
   script:
-    - docker pull koalaman/shellcheck
-    - docker run koalaman/shellcheck --version
-    - >
-      docker run -i
-      koalaman/shellcheck
-      - < get-docker-compose-latest-version.sh
+    - shellcheck --version
+    - shellcheck get-docker-compose-latest-version.sh
 
 # Lint the Dockerfile using Hadolint
 lint-the-dockerfile:
   stage: lint
+  image: hadolint/hadolint:latest-debian
   script:
-    - docker pull hadolint/hadolint
-    - docker run hadolint/hadolint hadolint --version
+    - hadolint --version
     - >
-      docker run -i
-      hadolint/hadolint hadolint
+      hadolint
       --ignore DL3018
-      - < Dockerfile
+      Dockerfile
 
 # Build and push to Dockerhub
 build-and-push-the-thing:
   stage: build
+  image: docker:latest
+  services:
+    - name: docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
   script:
     - docker build --pull --tag "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
 
+# Pull and run
 run-and-test-the-thing:
   stage: test
+  image: docker:latest
+  services:
+    - name: docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
   script:
     - docker pull "$CI_REGISTRY_IMAGE"
     - docker run "$CI_REGISTRY_IMAGE"
