@@ -46,14 +46,17 @@ lint-the-dockerfile:
       --ignore DL3018
       Dockerfile
 
-# Build and push to Dockerhub
-build-and-push-the-thing:
-  stage: build
+.dind_template: &dind
   image: docker:latest
   services:
     - name: docker:dind
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+
+# Build and push to Dockerhub
+build-and-push-the-thing:
+  stage: build
+  <<: *dind
   script:
     - docker build --pull --tag "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
@@ -61,11 +64,7 @@ build-and-push-the-thing:
 # Pull and run
 run-and-test-the-thing:
   stage: test
-  image: docker:latest
-  services:
-    - name: docker:dind
-  before_script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+  <<: *dind
   script:
     - docker pull "$CI_REGISTRY_IMAGE"
     - docker run "$CI_REGISTRY_IMAGE"
