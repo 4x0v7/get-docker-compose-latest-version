@@ -27,24 +27,13 @@ check-the-links:
     - go get -v -u github.com/raviqqe/liche
     - liche README.md -v
 
-# Lint the shellfile using Shellcheck
-lint-the-scripts:
-  stage: lint
-  image: koalaman/shellcheck-alpine:stable
-  script:
-    - shellcheck --version
-    - shellcheck get-docker-compose-latest-version.sh
-
 # Lint the Dockerfile using Hadolint
 lint-the-dockerfile:
   stage: lint
   image: hadolint/hadolint:latest-debian
   script:
     - hadolint --version
-    - >
-      hadolint
-      --ignore DL3018
-      Dockerfile
+    - hadolint Dockerfile
 
 .dind_template: &dind
   image: docker:latest
